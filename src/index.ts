@@ -30,7 +30,7 @@ class App {
             res.send('HOME,,Ini Express dengan TS');
         })
 
-        this.app.use("/users", UserRoutes);
+        this.app.use("/api/v1/users", UserRoutes);
         // this.app.route("/users").post((req: Request, res: Response) => {
         //     res.send(req.body);
         // })
