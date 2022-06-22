@@ -7,7 +7,7 @@ import cors from "cors";
 
 
 // ROUTERS
-import UserRoutes from "./routers/UserRoutes";
+import UserRoutes from "./routers/UserRouter";
 
 class App {
     public app: Application
