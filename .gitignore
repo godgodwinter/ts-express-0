@@ -106,3 +106,5 @@ dist
 
 # babeng
 build/
+.env.production
+.env.development
