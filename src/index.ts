@@ -1,7 +1,13 @@
 import express, { Application, Request, Response } from "express";
 import bodyParser from "body-parser"; //untuk menampilkan data request berbentuk json
 import morgan from "morgan"; //untukk logger / melihat riwayat yang di konsumsi API
+import compression from "compression";
+import helmet from "helmet";
+import cors from "cors";
 
+
+// ROUTERS
+import UserRoutes from "./routers/UserRoutes";
 
 class App {
     public app: Application
@@ -14,16 +20,20 @@ class App {
     protected plugins(): void {
         this.app.use(bodyParser.json());
         this.app.use(morgan("dev"));
+        this.app.use(compression());
+        this.app.use(helmet());
+        this.app.use(cors());
     }
 
     protected routes(): void {
         this.app.route("/").get((req: Request, res: Response) => {
-            res.send('Ini Express dengan TS');
+            res.send('HOME,,Ini Express dengan TS');
         })
 
-        this.app.route("/users").post((req: Request, res: Response) => {
-            res.send(req.body);
-        })
+        this.app.use("/users", UserRoutes);
+        // this.app.route("/users").post((req: Request, res: Response) => {
+        //     res.send(req.body);
+        // })
     }
 }
 
