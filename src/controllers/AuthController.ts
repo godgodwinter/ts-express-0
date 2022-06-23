@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import PasswordHash from '../utils/PasswordHash';
+import Authentication from '../utils/Authentication';
 const db = require("../db/models");
 
 // DUMMY DATA
@@ -7,7 +7,7 @@ const db = require("../db/models");
 class AuthController {
     register = async (req: Request, res: Response): Promise<Response> => {
         let { username, password } = req.body;
-        const hashPassword: string = await PasswordHash.hash(password);
+        const hashPassword: string = await Authentication.passwordHash(password);
 
         await db.user.create({
             username,
@@ -19,12 +19,23 @@ class AuthController {
     login = async (req: Request, res: Response): Promise<Response> => {
         let { username, password } = req.body;
 
-        const createdUser = await db.user.create({
-            username,
-            password
+        const user = await db.user.findOne({
+            where: { username }
         })
+        if (user == null) {
+            return res.send("Username tidak ditemukan!");
+        }
+        let compare = await Authentication.passwordCompare(password, user.password);
 
-        return res.send(createdUser);
+        if (compare) {
+            let token = Authentication.generateToken(user.id, username);
+            return res.send({
+                token
+            })
+        }
+
+        return res.send("Authentication failed!");
+
     }
 
 }
