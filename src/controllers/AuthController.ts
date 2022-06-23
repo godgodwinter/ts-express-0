@@ -1,17 +1,30 @@
 import { Request, Response } from 'express';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
-import IController from './ControllerInterface';
-
+import PasswordHash from '../utils/PasswordHash';
+const db = require("../db/models");
 
 // DUMMY DATA
 
 class AuthController {
-    login(req: Request, res: Response): Response {
-        return res.send("")
+    register = async (req: Request, res: Response): Promise<Response> => {
+        let { username, password } = req.body;
+        const hashPassword: string = await PasswordHash.hash(password);
+
+        await db.user.create({
+            username,
+            password: hashPassword
+        })
+
+        return res.send("Registrasi success!");
     }
-    register(req: Request, res: Response): Response {
-        return res.send("")
+    login = async (req: Request, res: Response): Promise<Response> => {
+        let { username, password } = req.body;
+
+        const createdUser = await db.user.create({
+            username,
+            password
+        })
+
+        return res.send(createdUser);
     }
 
 }
