@@ -38,6 +38,10 @@ class AuthController {
 
     }
 
+    profile = (req: Request, res: Response): Response => {
+        return res.send(req.app.locals.credential);
+    }
+
 }
 
 export default new AuthController();
