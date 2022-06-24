@@ -1,13 +1,23 @@
 import { Request, Response } from 'express';
 import IController from './ControllerInterface';
+const db = require("../db/models")
 
 
 class TodoController implements IController {
     index(req: Request, res: Response): Response {
         return res.send("index")
     }
-    create(req: Request, res: Response): Response {
-        return res.send("Create Success");
+    create = async (req: Request, res: Response): Promise<Response> => {
+        const { id } = req.app.locals.credential;
+        const { desc } = req.body;
+        const todo = await db.todo.create({
+            user_id: id,
+            desc
+        });
+        return res.send({
+            data: todo,
+            message: "Create Success"
+        });
     }
     show(req: Request, res: Response): Response {
         return res.send("show");
