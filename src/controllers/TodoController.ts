@@ -63,10 +63,13 @@ class TodoController implements IController {
         const { id: user_id } = req.app.locals.credential; //varibale id dari app local(user login ) direname jadi user_id
         const { id } = req.params; // id yang ini dari id params
 
+        await db.todo.destroy({
+            where: { id, user_id }
+        })
 
         return res.send({
             data: "",
-            message: "Success"
+            message: "Delete Success"
         });
     }
 
