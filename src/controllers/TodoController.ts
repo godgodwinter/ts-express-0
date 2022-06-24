@@ -1,15 +1,11 @@
 import { Request, Response } from 'express';
 import IController from './ControllerInterface';
-const db = require("../db/models")
-
+import TodoService from '../services/TodoService';
 
 class TodoController implements IController {
     index = async (req: Request, res: Response): Promise<Response> => {
-        const { id } = req.app.locals.credential;
-        const todos = await db.todo.findAll({
-            where: { user_id: id },
-            attributes: ['id', 'desc']
-        });
+        const service: TodoService = new TodoService(req);
+        const todos = await service.getAll();
 
         return res.send({
             data: todos,
@@ -17,58 +13,37 @@ class TodoController implements IController {
         });
     }
     create = async (req: Request, res: Response): Promise<Response> => {
-        const { id } = req.app.locals.credential;
-        const { desc } = req.body;
-        const todo = await db.todo.create({
-            user_id: id,
-            desc
-        });
+        const service: TodoService = new TodoService(req);
+        const todo = await service.store();
         return res.send({
             data: todo,
             message: "Create Success"
         });
     }
     show = async (req: Request, res: Response): Promise<Response> => {
-        const { id: user_id } = req.app.locals.credential; //varibale id dari app local(user login ) direname jadi user_id
-        const { id } = req.params; // id yang ini dari id params
-
-        const todo = await db.todo.findOne({
-            where: { id, user_id }
-        })
+        const service: TodoService = new TodoService(req);
+        const todo = await service.getOne();
         return res.send({
             data: todo,
             message: "Get Data Success"
         });
     }
     update = async (req: Request, res: Response): Promise<Response> => {
-        const { id: user_id } = req.app.locals.credential; //varibale id dari app local(user login ) direname jadi user_id
-        const { id } = req.params; // id yang ini dari id params
-        const { desc } = req.body; // id yang ini dari id params
-
-        await db.todo.update({
-            desc
-        }, {
-            where: {
-                id, user_id
-            }
-        })
+        const service: TodoService = new TodoService(req);
+        const todo = await service.update();
 
         return res.send({
-            data: "",
+            data: todo,
             message: "Update Success"
         });
     }
 
     delete = async (req: Request, res: Response): Promise<Response> => {
-        const { id: user_id } = req.app.locals.credential; //varibale id dari app local(user login ) direname jadi user_id
-        const { id } = req.params; // id yang ini dari id params
-
-        await db.todo.destroy({
-            where: { id, user_id }
-        })
+        const service: TodoService = new TodoService(req);
+        const todo = await service.delete();
 
         return res.send({
-            data: "",
+            data: todo,
             message: "Delete Success"
         });
     }
