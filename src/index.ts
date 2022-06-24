@@ -11,6 +11,7 @@ import { config as dotenv } from "dotenv";
 // ROUTERS
 import UserRoutes from "./routers/UserRouter";
 import AuthRoutes from "./routers/AuthRoutes";
+import TodoRoutes from "./routers/TodoRoutes";
 
 class App {
     public app: Application
@@ -36,6 +37,7 @@ class App {
 
         this.app.use("/api/v1/users", UserRoutes);
         this.app.use("/api/v1/auth", AuthRoutes);
+        this.app.use("/api/v1/todos", TodoRoutes);
         // this.app.route("/users").post((req: Request, res: Response) => {
         //     res.send(req.body);
         // })
